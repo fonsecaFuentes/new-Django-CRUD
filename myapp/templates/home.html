@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="px-3">
+    <section class="car card-body">
+        {% if request.user.is_authenticated %}<h4 class="lead mt-4">Bienvenido {{ user.username | upper }}</h4>{% endif %}
+        <h2 class="text-center">HOME</h2>
+        <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia odit enim sapiente quis facere quas ipsam, facilis nostrum iste maxime laboriosam cum temporibus aspernatur officia placeat quidem accusantium iure obcaecati, corporis labore, similique accusamus maiores. Saepe libero, earum ducimus tenetur veritatis numquam temporibus praesentium esse repudiandae quam vel quis, optio non voluptas illo, aliquam atque vitae nihil ea! Placeat delectus eum quod ipsum eius accusantium itaque, cumque cupiditate enim consequatur similique adipisci rem consectetur, excepturi soluta commodi magni in ratione debitis sapiente, rerum sed dicta perspiciatis? Non minima exercitationem incidunt, unde delectus doloremque at tempore dolores excepturi ipsam voluptatibus dolorem earum quis nostrum aliquid natus ea repellendus vel, blanditiis recusandae odit. Fugiat sed, ad voluptates praesentium doloribus expedita deserunt exercitationem cumque debitis provident cupiditate cum? Minima laboriosam corporis tempore aut amet sint sed, aspernatur omnis, nobis laborum consequatur recusandae, nesciunt quidem beatae animi rem. Labore eius fuga nesciunt ratione porro accusantium debitis harum rerum voluptas iure placeat cumque unde alias aspernatur distinctio, eligendi, adipisci nisi consequuntur. Explicabo ut velit sunt ipsam eum nemo, blanditiis esse illum excepturi dolores iusto totam sapiente doloremque. Doloribus odio dolorem quidem modi voluptate incidunt assumenda. Et quibusdam quasi ipsum? Debitis quaerat laudantium exercitationem nostrum blanditiis.</p>
+        {% if not request.user.is_authenticated %}
+        <div class="text-center">
+            <a class="btn btn-secondary" href="{% url 'login' %}">
+                SignIn
+            </a>
+            <a class="btn btn-dark" href="{% url 'singup' %}">
+                SingUp
+            </a>
+        </div>
+        {% endif %}
+        {% if messages %}
+        <div class="mt-4 alert alert-success" role="alert">
+            {% for message in messages %}
+                {% autoescape off %}{{ message }}{% endautoescape %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}
