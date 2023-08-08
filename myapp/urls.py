@@ -18,6 +18,9 @@ from django.urls import path
 from .views import home, sing_up, section
 from .views import data, tasks, observations
 from .views import exit, activate, password_change
+from .views import password_reset_request
+from .views import passwordResetConfirm
+from .views import profile
 
 urlpatterns = [
     path("", home, name='home'),
@@ -27,6 +30,17 @@ urlpatterns = [
     path("tasks/", tasks, name='tasks'),
     path("observations/", observations, name='observations'),
     path("logout/", exit, name='exit'),
-    path("password_change/", password_change, name='password_change'),
+    path("profile/", profile, name='profile'),
+    path("accounts/password_change/", password_change, name='password_change'),
     path('activate/<uidb64>/<token>', activate, name='activate'),
+    path(
+        "accounts/password_reset/",
+        password_reset_request,
+        name="password_reset"
+    ),
+    path(
+        'accounts/reset/<uidb64>/<token>/',
+        passwordResetConfirm,
+        name='password_reset_confirm'
+    ),
 ]

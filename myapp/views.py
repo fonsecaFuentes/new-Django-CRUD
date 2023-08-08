@@ -11,12 +11,12 @@ from .tokens import account_activation_token
 from django.core.mail import EmailMessage
 from .forms import SetPasswordForm
 from .forms import PasswordResetForm
+from .forms import UserForm, ProfileForm
 from django.db.models.query_utils import Q
 
 
 # Create your views here.
 def home(request):
-    # Obtener los mensajes de la sesión y agregarlos al contexto
     messages_from_session = messages.get_messages(request)
     messages_list = []
     for message in messages_from_session:
@@ -204,6 +204,27 @@ def passwordResetConfirm(request, uidb64, token):
         a la página de inicio'
     )
     return redirect("home")
+
+
+# Pagina de perfil
+@login_required
+def profile(request):
+    user = request.user
+    user_form = UserForm(instance=user)
+    profile_form = ProfileForm(instance=user.profile)
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=user)
+        profile_form = ProfileForm(
+            request.POST, request.FILES, instance=user.profile
+        )
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+    return render(request, 'profile/profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    })
 
 
 @login_required
