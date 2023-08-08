@@ -62,7 +62,7 @@ class Bearing(models.Model):
 
     def __str__(self):
         return f"Rodamientos - Delantero - {self.front_bearing}\
-             - Trasero - {self.rear_bearing} Bomba {self.pump.tag}"
+             - Trasero - {self.rear_bearing} - Bomba {self.pump.tag}"
 
 
 class Reten(models.Model):

@@ -22,28 +22,34 @@ def add_pump(request):
 
 def pumps(request):
     pumps_list = Pumps.objects.all()
-    return render(request, 'pumps/pumps.html', {'pumps_list': pumps_list})
-
-
-def pumps_request(request):
-    pumps_list = Pumps.objects.all()
 
     for pump in pumps_list:
-        pump.has_mechanical_seal = MechanicalSealForm.objects.filter(
-            pump=pump
-        ).exists()
-        pump.has_reten = RetenForm.objects.filter(pump=pump).exists()
-        pump.has_bearing = BearingForm.objects.filter(pump=pump).exists()
-
-        # Agrega puntos de depuración aquí
-        print(
-            f"Pump ID: {pump.id}, \
-                has_bearing: {pump.has_bearing}, \
-                has_mechanical_seal: {pump.has_mechanical_seal}, \
-                has_reten: {pump.has_reten}"
-        )
+        pump.has_mechanical_seal = pump.mechanicalseal_set.exists()
+        pump.has_reten = pump.reten_set.exists()
+        pump.has_bearing = pump.bearing_set.exists()
 
     return render(request, 'pumps/pumps.html', {'pumps_list': pumps_list})
+
+
+# def pumps_request(request):
+#     pumps_list = Pumps.objects.all()
+
+#     for pump in pumps_list:
+#         pump.has_mechanical_seal = MechanicalSealForm.objects.filter(
+#             pump=pump
+#         ).exists()
+#         pump.has_reten = RetenForm.objects.filter(pump=pump).exists()
+#         pump.has_bearing = BearingForm.objects.filter(pump=pump).exists()
+
+#         # Agrega puntos de depuración aquí
+#         print(
+#             f"Pump ID: {pump.id}, \
+#                 has_bearing: {pump.has_bearing}, \
+#                 has_mechanical_seal: {pump.has_mechanical_seal}, \
+#                 has_reten: {pump.has_reten}"
+#         )
+
+#     return render(request, 'pumps/pumps.html', {'pumps_list': pumps_list})
 
 
 def bearing(request):

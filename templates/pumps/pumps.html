@@ -141,10 +141,11 @@
                               <p class="card-text">Medida Eje Motor: 35mm</p>
                               <hr>
                               <p class="card-text">Medida Eje Bomba: 25mm</p>
-                              <hr>
                               {% if pump.has_bearing %}
+                              <hr>
                               <code><a href="" style="color: inherit; cursor: pointer; text-decoration: none">mas info</a></code>
                               {% endif %}
+                              <hr>
                               <a {% if not pump.has_bearing %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
                               <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
                               <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
@@ -168,8 +169,8 @@
                               <p class="card-text">Rodamientos delanteros: 6308</p>
                               <hr>
                               <p class="card-text">Rodamientos traseros: 6207</p>
-                              <hr>
                               {% if pump.has_motor %}
+                              <hr>
                               <code><a href="" style="color: inherit; cursor: pointer; text-decoration: none">mas info</a></code>
                               {% endif %}
                               <hr>
