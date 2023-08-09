@@ -21,5 +21,5 @@ class Coupling(models.Model):
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Acolple - Motor - {self.motor['motor_id']}\
-             - Bomba {self.pump['tag']}"
+        return f"Acolple - Motor {self.motor.model}\
+             - Bomba {self.pump.tag}"

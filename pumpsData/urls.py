@@ -17,13 +17,11 @@ Including another URLconf
 from django.urls import path
 from .views import add_pump
 from .views import pumps
-from .views import bearing
-# from .views import pumps_request
+# from .views import bearing
 
 
 urlpatterns = [
     path('pumps/add_pump/', add_pump, name='add_pump'),
     path('pumps/', pumps, name='pumps'),
-    path('bearing/', bearing, name='bearing'),
-    # path('pumps/', pumps_request, name='pumps_request'),
+    # path('bearing/', bearing, name='bearing'),
 ]

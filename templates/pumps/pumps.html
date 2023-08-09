@@ -12,19 +12,19 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <div class="ms-auto">
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
-                        <button class="btn btn-light btn-lg" type="submit">Buscar</button>
-                    </form>
+                  <form class="d-flex" role="search" method="get">
+                    <input class="form-control me-2" type="search" name="search" placeholder="Buscar" aria-label="Buscar" value="{{ search_query }}">
+                    <button class="btn btn-light btn-lg" type="submit">Buscar</button>
+                  </form>
                 </div>
               </div>
             </div>
           </nav>
     </section>
     <div class="container mt-4 mb-4">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-          <div class="col">
+        <div class="row">
             {% for pump in pumps_list %}
+            <div class="col-md-4">
               <div class="card shadow p-1">
                       <img src="{{ pump.image.url }}" class="card-img-top" alt="...">
                   <div class="card-body">
@@ -35,148 +35,159 @@
                       <p class="card-text">Fabricante: {{ pump.brand }}</p>
                       <p class="card-text">Descripcion: {{ pump.description }}</p>
                       <hr>
-                      {% if not pump.has_bearing %}
-                        <p class="card-text text-danger">No hay rodamientos disponibles.</p>
-                      {% endif %}
-                      <hr>
-                      {% if not pump.has_mechanical_seal %}
-                        <p class="card-text text-danger">No hay sello mecánico disponible.</p>
-                      {% endif %}
-                      <hr>
-                      {% if not pump.has_reten %}
-                        <p class="card-text text-danger">No hay retenes disponibles.</p>
-                      {% endif %}
-                      <hr>
-                      {% if not pump.has_reten %}
-                        <p class="card-text text-danger">No hay acople disponible.</p>
-                      {% endif %}
-                      <hr>
-                      {% if not pump.has_motor %}
-                        <p class="card-text text-danger">No hay motore disponible.</p>
-                      {% endif %}
-                      <hr>
                       <div class="accordion" id="accordionExample">
                         <div class="accordion-item">
                           <h2 class="accordion-header collapsed" id="headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne{{pump.pump_id}}" aria-expanded="true" aria-controls="collapseOne">
                               <h5>Rodamientos</h5>
                             </button>
                           </h2>
-                          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                          <div id="collapseOne{{pump.pump_id}}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                              <p><strong>Bomba P-122</strong></p>
                               <hr>
-                              <p class="card-text">Tipo de Rodamientos: C3 2RS1</p>
+                              {% if not pump.has_bearing %}
+                              <p class="card-text text-danger">No hay rodamientos disponibles.</p>
+                              {% else %}
+                              {% for bearing in pump.bearing_set.all %}
+                              <p><strong>Rodaminetos {{ pump.tag }}</strong></p>
                               <hr>
-                              <p class="card-text">Cantidad: 2</p>
+                              <p class="card-text">Tipo de Rodamientos: {{ bearing.types }}</p>
                               <hr>
-                              <p class="card-text">Rodamientos delanteros: 6506 2rs1</p>
+                              <p class="card-text">Cantidad: {{ bearing.amount }}</p>
                               <hr>
-                              <p class="card-text">Rodamientos traseros: 6506 2rs1</p>
+                              <p class="card-text">Rodamientos delanteros: {{ bearing.front_bearing }}</p>
                               <hr>
-                              <p class="card-text">Descripción: Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perspiciatis repellendus aspernatur nobis explicabo illo voluptas alias eveniet, officia molestiae voluptate est? Culpa incidunt aperiam quasi et quae officiis id praesentium?</p>
+                              <p class="card-text">Rodamientos traseros: {{ bearing.rear_bearing }}</p>
                               <hr>
-                              <a {% if not pump.has_bearing %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
-                              <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
-                              <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
+                              <p class="card-text">Descripción: {{ bearing.description }}</p>
+                              {% endfor %}
+                              {% endif %}
+                              <hr>
+                              <a {% if not pump.has_bearing %}href="#" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
+                              <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
+                              <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
                             </div>
                           </div>
                         </div>
                         <div class="accordion-item">
                           <h2 class="accordion-header collapsed" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo{{pump.pump_id}}" aria-expanded="false" aria-controls="collapseTwo">
                               <h5>Sello</h5>
                             </button>
                           </h2>
-                          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                          <div id="collapseTwo{{pump.pump_id}}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                              <p><strong>Bomba P-122</strong></p>
                               <hr>
-                              <p class="card-text">Marca: Latty</p>
+                              {% if not pump.has_mechanicalseal %}
+                              <p class="card-text text-danger">No hay sello mecánico disponible.</p>
+                              {% else %}
+                              {% for mechanicalseal in pump.mechanicalseal_set.all %}
+                              <p><strong>Sello {{ pump.tag }}</strong></p>
                               <hr>
-                              <p class="card-text">Tipo: Monoresorte</p>
+                              <p class="card-text">Marca: {{mechanicalseal.brand}}</p>
                               <hr>
-                              <p class="card-text">Medida: 35mm</p>
+                              <p class="card-text">Tipo: {{mechanicalseal.types}}</p>
                               <hr>
-                              <p class="card-text">Descripción: Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perspiciatis repellendus aspernatur nobis explicabo illo voluptas alias eveniet, officia molestiae voluptate est? Culpa incidunt aperiam quasi et quae officiis id praesentium?</p>
+                              <p class="card-text">Medida: {{mechanicalseal.extention}}</p>
                               <hr>
-                              <a {% if not pump.has_mechanical_seal %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
-                              <a {% if not pump.has_mechanical_seal %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
-                              <a {% if not pump.has_mechanical_seal %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
+                              <p class="card-text">Descripción: {{mechanicalseal.description}}</p>
+                              {% endfor %}
+                              {% endif %}
+                              <hr>
+                              <a {% if not pump.has_mechanicalseal %}href="#" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
+                              <a {% if not pump.has_mechanicalseal %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
+                              <a {% if not pump.has_mechanicalseal %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
                             </div>
                           </div>
                         </div>
                         <div class="accordion-item">
                           <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree{{pump.pump_id}}" aria-expanded="false" aria-controls="collapseThree">
                               <h5>Retenes</h5>
                             </button>
                           </h2>
-                          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                          <div id="collapseThree{{pump.pump_id}}" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                              <p><strong>Bomba P-122</strong></p>
                               <hr>
-                              <p class="card-text">Retenes delanteros: 40-55-07</p>
+                              {% if not pump.has_reten %}
+                              <p class="card-text text-danger">No hay retenes disponibles.</p>
+                              {% else %}
+                              {% for reten in pump.reten_set.all %}
+                              <p><strong>Retenes {{ pump.tag }}</strong></p>
                               <hr>
-                              <p class="card-text">Retenes traseros: 40-55-07</p>
+                              <p class="card-text">Retenes delanteros: {{reten.front_seal}}</p>
                               <hr>
-                              <p class="card-text">Descripción: Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perspiciatis repellendus aspernatur nobis explicabo illo voluptas alias eveniet, officia molestiae voluptate est? Culpa incidunt aperiam quasi et quae officiis id praesentium?</p>
+                              <p class="card-text">Retenes traseros: {{reten.rear_seal}}</p>
                               <hr>
-                              <a {% if not pump.has_reten %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
-                              <a {% if not pump.has_reten %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
-                              <a {% if not pump.has_reten %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
+                              <p class="card-text">Descripción: {{reten.details}}</p>
+                              {% endfor %}
+                              {% endif %}
+                              <hr>
+                              <a {% if not pump.has_reten %}href="#" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
+                              <a {% if not pump.has_reten %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
+                              <a {% if not pump.has_reten %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
                             </div>
                           </div>
                         </div>
                         <div class="accordion-item">
                           <h2 class="accordion-header collapsed" id="headingFour">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour{{pump.pump_id}}" aria-expanded="false" aria-controls="collapseFour">
                               <h5>Acople</h5>
                             </button>
                           </h2>
-                          <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headFourFour" data-bs-parent="#accordionExample">
+                          <div id="collapseFour{{pump.pump_id}}" class="accordion-collapse collapse" aria-labelledby="headFourFour" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                              <p><strong>Bomba P-122</strong></p>
                               <hr>
-                              <p class="card-text">Medida Eje Motor: 35mm</p>
+                              {% if not pump.has_coupling %}
+                              <p class="card-text text-danger">No hay acople disponible.</p>
+                              {% else %}
+                              {% for coupling in pump.coupling_set.all %}
+                              <p><strong>Acople {{ pump.tag }}</strong></p>
                               <hr>
-                              <p class="card-text">Medida Eje Bomba: 25mm</p>
-                              {% if pump.has_bearing %}
+                              <p class="card-text">Medida Eje Motor: {{coupling.motor_side_measure}}</p>
+                              <hr>
+                              <p class="card-text">Medida Eje Bomba: {{coupling.pump_side_sizer}}</p>
                               <hr>
                               <code><a href="" style="color: inherit; cursor: pointer; text-decoration: none">mas info</a></code>
+                              {% endfor %}
                               {% endif %}
                               <hr>
-                              <a {% if not pump.has_bearing %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
-                              <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
-                              <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
+                              <a {% if not pump.has_coupling %}href="#" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
+                              <a {% if not pump.has_coupling %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
+                              <a {% if not pump.has_coupling %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
                             </div>
                           </div>
                         </div>
                         <div class="accordion-item">
                           <h2 class="accordion-header collapsed" id="headingFive">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive{{pump.pump_id}}" aria-expanded="false" aria-controls="collapseFive">
                               <h5>Motor</h5>
                             </button>
                           </h2>
-                          <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                          <div id="collapseFive{{pump.pump_id}}" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                              <p><strong>Bomba P-122</strong></p>
                               <hr>
-                              <p class="card-text">HP: 4</p>
+                              {% if not pump.has_motor %}
+                              <p class="card-text text-danger">No hay motor disponible.</p>
+                              {% else %}
+                              {% for motor in pump.motor_set.all %}
+                              <p><strong>Motor {{ pump.tag }}</strong></p>
                               <hr>
-                              <p class="card-text">RPM: 3000</p>
+                              <p class="card-text">HP: {{motor.hp}}</p>
                               <hr>
-                              <p class="card-text">Rodamientos delanteros: 6308</p>
+                              <p class="card-text">RPM: {{motor.rpm}}</p>
                               <hr>
-                              <p class="card-text">Rodamientos traseros: 6207</p>
-                              {% if pump.has_motor %}
+                              <p class="card-text">Rodamientos delanteros: {{motor.front_bearing}}</p>
+                              <hr>
+                              <p class="card-text">Rodamientos traseros: {{motor.rear_bearing}}</p>
                               <hr>
                               <code><a href="" style="color: inherit; cursor: pointer; text-decoration: none">mas info</a></code>
+                              {% endfor %}
                               {% endif %}
                               <hr>
-                              <a {% if not pump.has_motor %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
-                              <a {% if not pump.has_motor %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
-                              <a {% if not pump.has_motor %}class="btn btn-sm btn-outline-disable"{% else %}href="{% url 'bearing' %}" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
+                              <a {% if not pump.has_motor %}href="{% url 'add_motor' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
+                              <a {% if not pump.has_motor %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
+                              <a {% if not pump.has_motor %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
                             </div>
                           </div>
                         </div>
@@ -186,8 +197,8 @@
                       <a href="#" class="btn btn-secondary w-100 btn-lg">Borrar</a>
                   </div>
               </div>
+            </div>
             {% endfor %}
-          </div>
         </div>
     </div>
 </main>
