@@ -17,11 +17,23 @@ Including another URLconf
 from django.urls import path
 from .views import add_pump
 from .views import pumps
-# from .views import bearing
+from .views import add_bearing
+from .views import add_mechanicalseal
+from .views import add_reten
 
 
 urlpatterns = [
     path('pumps/add_pump/', add_pump, name='add_pump'),
     path('pumps/', pumps, name='pumps'),
-    # path('bearing/', bearing, name='bearing'),
+    path(
+        'pumps/add_bearing/<int:pump_id>',
+        add_bearing,
+        name='add_bearing'
+    ),
+    path(
+        'pumps/add_mechanicalseal/<int:pump_id>',
+        add_mechanicalseal,
+        name='add_mechanicalseal'
+    ),
+    path('pumps/add_reten/<int:pump_id>', add_reten, name='add_reten'),
 ]

@@ -16,8 +16,18 @@ Including another URLconf
 """
 from django.urls import path
 from .views import add_motor
+from .views import motor
+from .views import update_motor
+from .views import delete_motor
 
 
 urlpatterns = [
-    path('pumps/<int:pump_id>/add_motor/', add_motor, name='add_motor')
+    path('pumps/<int:pump_id>/add_motor/', add_motor, name='add_motor'),
+    path('pumps/<int:motor_id>/motor/', motor, name='motor'),
+    path(
+        'pumps/<int:motor_id>/update_motor/', update_motor, name='update_motor'
+    ),
+    path(
+        'pumps/<int:motor_id>/delete_motor/', delete_motor, name='delete_motor'
+    ),
 ]

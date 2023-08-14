@@ -15,7 +15,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
+from .views import add_coupling
+from .views import coupling
+from .views import update_coupling
+from .views import delete_coupling
 
 
 urlpatterns = [
+    path(
+        'pumps/add_coupling/<int:pump_id>/<int:motor_id>',
+        add_coupling,
+        name='add_coupling'
+    ),
+    path('pumps/<int:coupling_id>/coupling/', coupling, name='coupling'),
+    path(
+        'pumps/<int:coupling_id>/update_coupling/',
+        update_coupling,
+        name='update_coupling'
+    ),
+    path(
+        'pumps/<int:coupling_id>/delete_coupling/',
+        delete_coupling,
+        name='delete_coupling'
+    ),
 ]

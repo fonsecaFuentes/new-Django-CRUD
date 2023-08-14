@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<main class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 mt-5">
+            <form action="" method="POST" class="card card-body shadow p-3">
+                <p><strong>Bomba {{ pump.tag }}</strong></p>
+                <p><strong>Motor {{ motor.brand }} | Carcasa {{ motor.model }}</strong></p>
+                <h2 class="text-center">Agregar Acople</h2><code><a href="{% url 'pumps' %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
+                <hr>
+                {% csrf_token %}
+                {{ coupling_form|crispy }}
+                <button type="submit" class="btn btn-dark btn-lg">
+                    Agregar
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

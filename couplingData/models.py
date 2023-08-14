@@ -6,12 +6,8 @@ from motorData.models import Motor
 # Create your models here.
 class Coupling(models.Model):
     coupling_id = models.AutoField(primary_key=True)
-    pump = models.ForeignKey(
-        Pumps, on_delete=models.CASCADE
-    )
-    motor = models.ForeignKey(
-        Motor, on_delete=models.CASCADE
-    )
+    pump = models.ForeignKey(Pumps, on_delete=models.CASCADE)
+    motor = models.ForeignKey(Motor, on_delete=models.CASCADE)
     types = models.CharField(max_length=100, blank=True)
     model = models.CharField(max_length=100, blank=True)
     motor_side_measure = models.CharField(max_length=100, blank=True)
@@ -19,6 +15,12 @@ class Coupling(models.Model):
     motor_key_measure = models.CharField(max_length=100, blank=True)
     pump_key_measure = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True, null=True)
+    image = models.ImageField(
+        default='img_coupling.png',
+        upload_to='img_coupling/',
+        verbose_name='Imagen de acolple',
+        blank=True
+    )
 
     def __str__(self):
         return f"Acolple - Motor {self.motor.model}\

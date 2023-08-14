@@ -3,6 +3,7 @@ from .models import Motor
 
 
 class MotorForm(forms.ModelForm):
+
     class Meta:
         model = Motor
         fields = [

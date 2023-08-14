@@ -7,10 +7,10 @@
     <div class="row">
         <div class="col-md-4 offset-md-4 mt-5">
             <form action="" method="POST" class="card card-body shadow p-3">
-                <h2 class="text-center">Agregar Motor</h2><code><a href="{% url 'pumps' %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
+                <h2 class="text-center">Agregar Sello</h2>
                 <hr>
                 {% csrf_token %}
-                {{ motor_form|crispy }}
+                {{ mechanicalseal_form|crispy }}
                 <button type="submit" class="btn btn-dark btn-lg">
                     Agregar
                 </button>
