@@ -8,6 +8,7 @@
         <div class="col-md-4 offset-md-4 mt-5">
             <form action="" method="POST" class="card card-body shadow p-3">
                 <h2 class="text-center">Agregar Bomba</h2>
+                <code><a href="{% url 'pumps' %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
                 <hr>
                 {% csrf_token %}
                 {{ pump_form|crispy }}

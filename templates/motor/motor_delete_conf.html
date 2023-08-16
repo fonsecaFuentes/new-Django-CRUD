@@ -13,7 +13,9 @@
                 <button type="submit" name="confirm_delete" class="btn btn-lg btn-outline-danger">Confirmar Eliminación</button>
                 <hr>
                 <div>
-                    <code><a href="{% url 'motor' motor.motor_id %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
+                    <code><a href="{% if request.GET.motor_list == 'true' %}{% url 'list_motor' %}
+                        {% elif request.GET.pump_list == 'true' %}{% url 'pumps' %}
+                        {% else %}{% url 'motor' motor.motor_id %}{% endif %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
                 </div>
             </form>
         </div>

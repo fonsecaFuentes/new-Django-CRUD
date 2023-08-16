@@ -35,7 +35,7 @@
             {% for pump in pumps_list %}
             <div class="col-md-4 mb-3">
               <div class="card shadow p-1">
-                      <img src="{{ pump.image.url }}" class="card-img-top" alt="...">
+                      <img src="{{ pump.image.url }}" class="card-img-top" alt="{{ pump.image.url }}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal">
                   <div class="card-body">
                       <h5 class="card-title">{{ pump.tag }}</h5>
                       <hr>
@@ -72,9 +72,31 @@
                               {% endfor %}
                               {% endif %}
                               <hr>
-                              <a {% if not pump.has_bearing %}href="{% url 'add_bearing' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
-                              <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
-                              <a {% if not pump.has_bearing %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
+                              <a {% if not pump.has_bearing %}
+                                    href="{% url 'add_bearing' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"
+                              {% else %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% endif %}>
+                                  Cargar
+                              </a>
+                              <a {% if not pump.has_bearing %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% else %}
+                                {% for bearing in pump.bearing_set.all %}
+                                  href="#" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#rodamientoModal{{ bearing.bearing_id }}"
+                                {% endfor %}
+                              {% endif %}>
+                                  Editar
+                            </a>
+                              <a {% if not pump.has_bearing %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% else %}
+                                {% for bearing in pump.bearing_set.all %}
+                                    href="{% url 'delete_bearing' bearing.bearing_id %}" class="btn btn-sm btn-outline-danger"
+                                {% endfor %}
+                              {% endif %}>
+                                  Eliminar
+                              </a>
                             </div>
                           </div>
                         </div>
@@ -103,9 +125,31 @@
                               {% endfor %}
                               {% endif %}
                               <hr>
-                              <a {% if not pump.has_mechanicalseal %}href="{% url 'add_mechanicalseal' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
-                              <a {% if not pump.has_mechanicalseal %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
-                              <a {% if not pump.has_mechanicalseal %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
+                              <a {% if not pump.has_mechanicalseal %}
+                                  href="{% url 'add_mechanicalseal' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"
+                              {% else %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% endif %}>
+                                  Cargar
+                              </a>
+                              <a {% if not pump.has_mechanicalseal %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% else %}
+                                {% for mechanicalseal in pump.mechanicalseal_set.all %}
+                                  href="#" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#selloModal{{mechanicalseal.seal_id}}"
+                                {% endfor %}
+                              {% endif %}>
+                                  Editar
+                              </a>
+                              <a {% if not pump.has_mechanicalseal %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% else %}
+                                {% for mechanicalseal in pump.mechanicalseal_set.all %}
+                                  href="{% url 'delete_mechanicalseal' mechanicalseal.seal_id %}" class="btn btn-sm btn-outline-danger"
+                                {% endfor %}
+                              {% endif %}>
+                                  Eliminar
+                              </a>
                             </div>
                           </div>
                         </div>
@@ -132,9 +176,31 @@
                               {% endfor %}
                               {% endif %}
                               <hr>
-                              <a {% if not pump.has_reten %}href="{% url 'add_reten' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
-                              <a {% if not pump.has_reten %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-secondary"{% endif %}>Editar</a>
-                              <a {% if not pump.has_reten %}class="btn btn-sm btn-outline-disable"{% else %}href="#" class="btn btn-sm btn-outline-danger"{% endif %}>Borrar</a>
+                              <a {% if not pump.has_reten %}
+                                  href="{% url 'add_reten' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"
+                              {% else %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% endif %}>
+                                  Cargar
+                              </a>
+                              <a {% if not pump.has_reten %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% else %}
+                                {% for reten in pump.reten_set.all %}
+                                    href="#" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#retenesModal{{ reten.seal_id }}"
+                                {% endfor %}
+                              {% endif %}>
+                                Editar
+                              </a>
+                              <a {% if not pump.has_reten %}
+                                  class="btn btn-sm btn-outline-disable"
+                              {% else %}
+                                {% for reten in pump.reten_set.all %}
+                                  href="{% url 'delete_reten' reten.seal_id %}" class="btn btn-sm btn-outline-danger"
+                                {% endfor %}
+                              {% endif %}>
+                                  Eliminar
+                              </a>
                             </div>
                           </div>
                         </div>
@@ -190,10 +256,10 @@
                                         class="btn btn-sm btn-outline-disable"
                                     {% else %}
                                       {% for coupling in pump.coupling_set.all %}
-                                        href="{% url 'delete_coupling' coupling.coupling_id %}" class="btn btn-sm btn-outline-danger"
+                                        href="{% url 'delete_coupling' coupling.coupling_id %}?pump_list=true" class="btn btn-sm btn-outline-danger"
                                       {% endfor %}
                                     {% endif %}>
-                                      Borrar
+                                      Eliminar
                                   </a>
                                 {% endfor %}
                               {% endif %}
@@ -229,7 +295,13 @@
                               {% endfor %}
                               {% endif %}
                               <hr>
-                              <a {% if not pump.has_motor %}href="{% url 'add_motor' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"{% else %}class="btn btn-sm btn-outline-disable"{% endif %}>Cargar</a>
+                              <a {% if not pump.has_motor %}
+                                    href="{% url 'add_motor' pump.pump_id %}" class="btn btn-sm btn-outline-secondary"
+                                {% else %}
+                                    class="btn btn-sm btn-outline-disable"
+                                {% endif %}>
+                                    Cargar
+                                </a>
                                 <a {% if not pump.has_motor %}
                                     class="btn btn-sm btn-outline-disable"
                                  {% else %}
@@ -243,23 +315,210 @@
                                     class="btn btn-sm btn-outline-disable"
                                   {% else %}
                                     {% for motor in pump.motor_set.all %}
-                                      href="{% url 'delete_motor' motor.motor_id %}" class="btn btn-sm btn-outline-danger"
+                                      href="{% url 'delete_motor' motor.motor_id %}?pump_list=true" class="btn btn-sm btn-outline-danger"
                                     {% endfor %}
                                   {% endif %}>
-                                  Borrar
+                                  Eliminar
                                 </a>
                             </div>
                           </div>
                         </div>
                       </div>
                       <hr>
-                      <a href="#" class="btn btn-dark w-100 mb-2 btn-lg">Editar</a>
-                      <a href="#" class="btn btn-secondary w-100 btn-lg">Borrar</a>
+                      <a href="#" class="btn btn-lg btn-outline-dark w-100 mb-2 btn-lg" data-bs-toggle="modal" data-bs-target="#bombaModal{{ pump.pump_id }}">Editar</a>
+                      <a href="{% url 'delete_pump' pump.pump_id %}" class="btn btn-lg btn-outline-danger w-100 btn-lg">Eliminar</a>
                   </div>
               </div>
             </div>
             {% endfor %}
         </div>
     </div>
+
+    <!-- Modal para la edición de rodamientos -->
+    {% for pump in pumps_list %}
+    {% for bearing in pump.bearing_set.all %}
+    <div class="modal fade" id="rodamientoModal{{ bearing.bearing_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar Rodamientos de Bomba {{ pump.tag }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="{% url 'update_bearing' bearing.bearing_id %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group mb-3">
+                <label for="types">Tipo de Rodamientos:</label>
+                <input type="text" class="form-control" id="types" name="types" value="{{bearing.types}}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="amount">Cantidad:</label>
+                <input type="number" class="form-control" id="amount" name="amount" value="{{bearing.amount}}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="front_bearing">Rodamientos delanteros:</label>
+                <input type="text" class="form-control" id="front_bearing" name="front_bearing" value="{{bearing.front_bearing}}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="rear_bearing">Rodamientos traseros:</label>
+                <input type="text" class="form-control" id="rear_bearing" name="rear_bearing" value="{{bearing.rear_bearing}}">
+              </div>
+              <div class="form-group">
+                <label for="description">Descripción:</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{bearing.description}}</textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Modal para la edición de sello -->
+    {% for mechanicalseal in pump.mechanicalseal_set.all %}
+    <div class="modal fade" id="selloModal{{mechanicalseal.seal_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar Sello Bomba {{mechanicalseal.pump.tag}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="{% url 'update_mechanicalseal' mechanicalseal.seal_id %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group mb-3">
+                <label for="extention">Medida:</label>
+                <input type="text" class="form-control" id="extention" name="extention" value="{{mechanicalseal.extention}}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="brand">Marca:</label>
+                <input type="text" class="form-control" id="brand" name="brand" value="{{mechanicalseal.brand}}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="types">Tipo de Sello:</label>
+                <input type="text" class="form-control" id="types" name="types" value="{{mechanicalseal.types}}">
+              </div>
+              <div class="form-group">
+                <label for="description">Descripción:</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{mechanicalseal.description}}</textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Modal para la edición de retenes -->
+    {% for reten in pump.reten_set.all %}
+    <div class="modal fade" id="retenesModal{{ reten.seal_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar Retenes Bomba {{reten.pump.tag}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="{% url 'update_reten' reten.seal_id %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group mb-3">
+                <label for="front_seal">Número de serie reten delantero:</label>
+                <input type="text" class="form-control" id="front_seal" name="front_seal" value="{{reten.front_seal}}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="rear_seal">Número de serie reten trasero:</label>
+                <input type="text" class="form-control" id="rear_seal" name="rear_seal" value="{{reten.rear_seal}}">
+              </div>
+              <div class="form-group">
+                <label for="details">Descripción:</label>
+                <textarea class="form-control" id="details" name="details" rows="3">{{reten.details}}</textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Modal para la edición de Bomba -->
+    <div class="modal fade" id="bombaModal{{ pump.pump_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar Bomba {{ pump.tag }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="{% url 'update_pump' pump.pump_id %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <input type="hidden" id="bomba-id-input" name="bomba_id" value="{{ pump.pump_id }}">
+              <div class="form-group mb-3">
+                <label for="tag">Tag:</label>
+                <input type="text" class="form-control" id="tag" name="tag" value="{{ pump.tag }}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="brand">Marca:</label>
+                <input type="text" class="form-control" id="brand" name="brand" value="{{ pump.brand }}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="model">Modelo:</label>
+                <input type="text" class="form-control" id="model" name="model" value="{{ pump.model }}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="types">Tipo de Bomba:</label>
+                <input type="text" class="form-control" id="types" name="types" value="{{ pump.types }}">
+              </div>
+              <div class="form-group">
+                <label for="description">Descripción:</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{pump.description}}</textarea>
+              </div>
+              <div class="form-group mt-3">
+                <label for="image">Imagen:</label>
+                <input type="file" class="form-control-file" id="image">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal para la imagen de bomba -->
+    <div class="modal fade" id="imagenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img src="{{ pump.image.url }}" class="img-fluid" alt="pump">
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
 </main>
 {% endblock %}

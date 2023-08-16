@@ -4,9 +4,6 @@
 
 {% block content %}
 
-{% load static %}
-<script src="{% static 'js/modal.js' %}"></script>
-
 {% if messages %}
 <div class="container mt-4">
     <div id="message-container" class="mt-4 alert alert-success" role="alert">
@@ -19,12 +16,12 @@
 <section>
     <div class="container mt-4">
       <div class="row">
-        <div class="col-md-6 offset-md-3">
+        {% for motor in motor_list %}
+        <div class="col-md-4 mb-3">
           <div class="card shadow p-3 mb-5">
             <img src="{{ motor.image.url }}" class="card-img-top" alt="{{ motor.model }}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal">
             <div class="card-body">
               <h5 class="card-title">Detalles del Motor Bomba {{ motor.pump.tag }}</h5>
-              <code><a href="{% url 'pumps' %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
               <p class="card-text">
                 <hr>
                 <strong>Marca:</strong> {{ motor.brand }}<br>
@@ -49,15 +46,17 @@
                 <strong>Descripción:</strong> {{ motor.description }}
                 <hr>
               </p>
-              <a href="{% url 'delete_motor' motor.motor_id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
-              <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editarModal">Editar</button>
+              <a href="{% url 'delete_motor' motor.motor_id %}?motor_list=true" id="motor_list" class="btn btn-sm btn-outline-danger">Eliminar</a>
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editarModal{{motor.motor_id}}" data-motor-list-param="{{ motor_list_param }}">Editar</button>
             </div>
           </div>
         </div>
+        {% endfor %}
       </div>
     </div>
 
     <!-- Modal para la imagen -->
+    {% for motor in motor_list %}
     <div class="modal fade" id="imagenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -69,7 +68,7 @@
     </div>
 
     <!-- Modal para la edición -->
-    <div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editarModal{{motor.motor_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -80,6 +79,7 @@
           <div class="modal-body">
             <form action="{% url 'update_motor' motor.motor_id %}" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
+              <input type="hidden" name="motor_list_param" value="true">
               <div class="form-group mb-3">
                 <label for="brand">Marca:</label>
                 <input type="text" class="form-control" id="brand" name="brand" value="{{motor.brand}}">
@@ -130,5 +130,6 @@
         </div>
       </div>
     </div>
+    {% endfor %}
   </section>
 {% endblock %}

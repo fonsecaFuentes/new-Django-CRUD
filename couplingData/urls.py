@@ -19,9 +19,11 @@ from .views import add_coupling
 from .views import coupling
 from .views import update_coupling
 from .views import delete_coupling
+from .views import list_coupling
 
 
 urlpatterns = [
+    path('coupling/', list_coupling, name='list_coupling'),
     path(
         'pumps/add_coupling/<int:pump_id>/<int:motor_id>',
         add_coupling,

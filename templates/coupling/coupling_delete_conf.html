@@ -6,14 +6,16 @@
         <div class="col-md-6 offset-md-3 mt-5 shadow p-4">
             <p class="text-center"><strong class="display-6">¿Estás seguro que deseas eliminar este acople?</strong></p>
             <p class="text-center"><code class="display-6">Bomba: {{ coupling.pump.tag }}</code></p>
-            <p class="text-center"><code class="display-6">Marca: {{ coupling.types }}</code></p>
-            <p class="text-center"><code class="display-6">Carcasa: {{ coupling.model }}</code></p>
+            <p class="text-center"><code class="display-6">Tipo de acople: {{ coupling.types }}</code></p>
+            <p class="text-center"><code class="display-6">Serie: {{ coupling.model }}</code></p>
             <form method="POST" class="text-center">
                 {% csrf_token %}
                 <button type="submit" name="confirm_delete" class="btn btn-lg btn-outline-danger">Confirmar Eliminación</button>
                 <hr>
                 <div>
-                    <code><a href="{% url 'coupling' coupling.coupling_id %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
+                    <code><a href="{% if request.GET.coupling_list == 'true' %}{% url 'list_coupling' %}
+                        {% elif request.GET.pump_list == 'true' %}{% url 'pumps' %}
+                        {% else %}{% url 'coupling' coupling.coupling_id %}{% endif %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
                 </div>
             </form>
         </div>

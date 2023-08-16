@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .forms import CouplingForm
 from django.contrib import messages
 from pumpsData.models import Pumps
@@ -8,6 +9,28 @@ from .models import Coupling
 
 
 # Create your views here.
+@login_required
+def list_coupling(request):
+    search_query = request.GET.get('search', '')
+    coupling_list = Coupling.objects.all()
+    pumps_list = Pumps.objects.all()
+
+    if search_query:
+        coupling_list = coupling_list.filter(
+            Q(tag__icontains=search_query) |
+            Q(types__icontains=search_query) |
+            Q(brand__icontains=search_query) |
+            Q(model__icontains=search_query)
+        )
+
+    context = {
+        'pumps_list': pumps_list,
+        'coupling_list': coupling_list,
+    }
+
+    return render(request, 'coupling/list_coupling.html', context)
+
+
 @login_required
 def add_coupling(request, pump_id, motor_id):
     pump = get_object_or_404(Pumps, pk=pump_id)
@@ -44,6 +67,7 @@ def coupling(request, coupling_id):
 @login_required
 def update_coupling(request, coupling_id):
     coupling = get_object_or_404(Coupling, pk=coupling_id)
+    coupling_list_param = request.POST.get('coupling_list_param')
     coupling_form = CouplingForm(instance=coupling)
 
     if request.method == 'POST':
@@ -54,7 +78,10 @@ def update_coupling(request, coupling_id):
             messages.success(
                 request, '¡Los datos se han almacenado exitosamente!'
             )
-            return redirect('coupling', coupling_id=coupling_id)
+            if coupling_list_param == 'true':
+                return redirect('list_coupling')
+            else:
+                return redirect('coupling', coupling_id=coupling_id)
         else:
             messages.error(request, '¡Hubo un error al almacenar los datos!')
     else:
@@ -68,6 +95,7 @@ def update_coupling(request, coupling_id):
 @login_required
 def delete_coupling(request, coupling_id):
     coupling = get_object_or_404(Coupling, pk=coupling_id)
+    coupling_list_param = request.GET.get('coupling_list')
 
     if request.method == 'POST':
         if 'confirm_delete' in request.POST:
@@ -75,7 +103,10 @@ def delete_coupling(request, coupling_id):
             messages.success(
                 request, '¡Los datos se han borrado exitosamente!'
             )
-            return redirect('pumps')
+            if coupling_list_param == 'true':
+                return redirect('list_coupling')
+            else:
+                return redirect('pumps')
         else:
             messages.error(
                 request, 'La acción de eliminación no se ha confirmado.'
