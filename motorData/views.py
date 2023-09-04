@@ -11,19 +11,24 @@ from .models import Motor
 @login_required
 def list_motor(request):
     search_query = request.GET.get('search', '')
+    anti_explosive_choice = request.GET.get('anti_explosive_choice', '')
     motor_list = Motor.objects.all()
-    pumps_list = Pumps.objects.all()
 
     if search_query:
         motor_list = motor_list.filter(
-            Q(tag__icontains=search_query) |
-            Q(types__icontains=search_query) |
+            Q(pump__tag__icontains=search_query) |
             Q(brand__icontains=search_query) |
-            Q(model__icontains=search_query)
+            Q(model__icontains=search_query) |
+            Q(hp__icontains=search_query) |
+            Q(rpm__icontains=search_query)
         )
 
+    if anti_explosive_choice == '1':
+        motor_list = motor_list.filter(anti_explosive=True)
+    elif anti_explosive_choice == '0':
+        motor_list = motor_list.filter(anti_explosive=False)
+
     context = {
-        'pumps_list': pumps_list,
         'motor_list': motor_list,
     }
 
@@ -58,6 +63,39 @@ def add_motor(request, pump_id):
     context = {'motor_form': motor_form, 'pump': pump}
 
     return render(request, 'motor/add_motor.html', context)
+
+
+@login_required
+def add_list_motor(request):
+    if request.method == 'POST':
+        motor_form = MotorForm(request.POST)
+        if motor_form.is_valid():
+            motor = motor_form.save(commit=False)
+
+            selected_pump = request.POST.get('pump', None)
+
+            if selected_pump:
+                selected_pump = Pumps.objects.get(pk=selected_pump)
+                motor.pump = selected_pump
+
+                motor.save()
+
+                messages.success(
+                    request, '¡Los datos se han almacenado exitosamente!'
+                )
+                return redirect('list_motor')
+            else:
+                messages.error(request, '¡Debe seleccionar una bomba!')
+        else:
+            messages.error(request, '¡Hubo un error al almacenar los datos!')
+    else:
+        motor_form = MotorForm()
+
+    available_pumps = Pumps.objects.filter(motor__isnull=True)
+
+    context = {'motor_form': motor_form, 'available_pumps': available_pumps}
+
+    return render(request, 'motor/add_list_motor.html', context)
 
 
 @login_required

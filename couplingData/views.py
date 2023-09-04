@@ -13,22 +13,28 @@ from .models import Coupling
 def list_coupling(request):
     search_query = request.GET.get('search', '')
     coupling_list = Coupling.objects.all()
-    pumps_list = Pumps.objects.all()
 
     if search_query:
         coupling_list = coupling_list.filter(
-            Q(tag__icontains=search_query) |
+            Q(pump__tag__icontains=search_query) |
             Q(types__icontains=search_query) |
-            Q(brand__icontains=search_query) |
-            Q(model__icontains=search_query)
+            Q(model__icontains=search_query) |
+            Q(motor_side_measure__icontains=search_query) |
+            Q(pump_side_sizer__icontains=search_query) |
+            Q(motor_key_measure__icontains=search_query) |
+            Q(pump_key_measure__icontains=search_query)
         )
 
-    context = {
-        'pumps_list': pumps_list,
-        'coupling_list': coupling_list,
-    }
+    context = {'coupling_list': coupling_list}
 
     return render(request, 'coupling/list_coupling.html', context)
+
+
+@login_required
+def coupling(request, coupling_id):
+    coupling = get_object_or_404(Coupling, pk=coupling_id)
+
+    return render(request, 'coupling/coupling.html', {'coupling': coupling})
 
 
 @login_required
@@ -58,10 +64,50 @@ def add_coupling(request, pump_id, motor_id):
 
 
 @login_required
-def coupling(request, coupling_id):
-    coupling = get_object_or_404(Coupling, pk=coupling_id)
+def add_list_coupling(request):
+    if request.method == 'POST':
+        coupling_form = CouplingForm(request.POST)
+        if coupling_form.is_valid():
+            coupling = coupling_form.save(commit=False)
 
-    return render(request, 'coupling/coupling.html', {'coupling': coupling})
+            selected_pump = request.POST.get('pump', None)
+            selected_motor = Motor.objects.get(pump=selected_pump)
+            print(selected_pump)
+            print(selected_motor.motor_id)
+            # selected_pump2 = Pumps.objects.get(pk=selected_pump)
+            # print('selected_pump2:', selected_pump2)
+            # print('selected_pump:', selected_pump)
+            # print('selected_pump:', selected_pump)
+
+            if selected_pump:
+                print('1')
+                selected_pump = Pumps.objects.get(pk=selected_pump)
+                coupling.pump = selected_pump
+
+                coupling.motor = selected_motor
+                coupling.save()
+
+                messages.success(
+                    request, '¡Los datos se han almacenado exitosamente!'
+                )
+                return redirect('list_coupling')
+            else:
+                print('2')
+                messages.error(request, '¡Debe seleccionar una bomba!')
+        else:
+            messages.error(request, '¡Hubo un error al almacenar los datos!')
+    else:
+        coupling_form = CouplingForm()
+
+    pumps_with_motor_and_coupling = Pumps.objects.filter(
+        motor__isnull=False, coupling__isnull=True
+    )
+
+    context = {
+        'available_pumps': pumps_with_motor_and_coupling
+    }
+
+    return render(request, 'coupling/add_list_coupling.html', context)
 
 
 @login_required

@@ -224,8 +224,6 @@
                                 {% for motor in pump.motor_set.all %}
                                   <p><strong>Acople Bomba {{ pump.tag }}</strong></p>
                                   <hr>
-                                  <p><strong>Motor {{ motor.brand }} | Carcasa {{ motor.model }}</strong></p>
-                                  <hr>
                                 {% endfor %}
                                   <p class="card-text">Medida Eje Motor: {{coupling.motor_side_measure}}</p>
                                   <hr>

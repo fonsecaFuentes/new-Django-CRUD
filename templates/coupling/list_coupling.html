@@ -3,119 +3,139 @@
 
 
 {% block content %}
-
-{% if messages %}
-<div class="container mt-4">
+{% load static %}
+<script src="{% static 'js/clearfield.js' %}"></script>
+<main>
+  <section class="py-5 text-center container">
+    <nav class="navbar navbar-expand-lg rounded shadow p-3" style="background-color: #6C757D;">
+      <div class="container-fluid">
+        <a class="btn btn-light btn-lg" href="{% url 'add_list_coupling' %}">Agregar Acople</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="ms-auto">
+            <form class="d-flex" role="search" method="get">
+              <input class="form-control me-2" type="search" name="search" placeholder="Buscar" aria-label="Buscar" value="{{ search_query }}">
+              <button class="btn btn-light me-2 btn-lg" type="submit">Buscar</button>
+              <button class="btn btn-warning btn-lg" id="clear-button">Limpiar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </nav>
+    {% if messages %}
     <div id="message-container" class="mt-4 alert alert-success" role="alert">
         {% for message in messages %}
             {% autoescape off %}{{ message }}{% endautoescape %}
         {% endfor %}
     </div>
-</div>
-{% endif %}
-<section>
-    <div class="container mt-4">
-      <div class="row">
-        {% for coupling in coupling_list %}
-        <div class="col-md-4 mb-3">
-          <div class="card shadow p-3 mb-5">
-            <img src="{{ coupling.image.url }}" class="card-img-top" alt="{{ coupling.model }}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal">
-            <div class="card-body">
-              <h5 class="card-title">Detalles del Acople Bomba {{ coupling.pump.tag }}</h5>
-              <p class="card-text">
-                <hr>
-                <strong>Tipo de acople:</strong> {{ coupling.types }}<br>
-                <hr>
-                <strong>Serie:</strong> {{ coupling.model }}<br>
-                <hr>
-                <strong>Medida eje lado motor:</strong> {{ coupling.motor_side_measure }}<br>
-                <hr>
-                <strong>Medida eje lado bomba:</strong> {{ coupling.pump_side_sizer }}<br>
-                <hr>
-                <strong>Medida chaveta lado motor:</strong> {{ coupling.motor_key_measure }}
-                <hr>
-                <strong>Medida chaveta lado bomba:</strong> {{ coupling.pump_key_measure }}
-                <hr>
-                <strong>Descripción:</strong> {{ coupling.description }}
-                <hr>
-              </p>
-              <a href="{% url 'delete_coupling' coupling.coupling_id %}?coupling_list=true" id="coupling_list" class="btn btn-sm btn-outline-danger">Eliminar</a>
-              <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editarModal{{coupling.coupling_id}}" data-motor-list-param="{{ coupling_list_param }}">Editar</button>
+    {% endif %}
+  </section>
+  <section>
+      <div class="container mt-4">
+        <div class="row">
+          {% for coupling in coupling_list %}
+          <div class="col-md-4 mb-3">
+            <div class="card shadow p-3 mb-5">
+              <img src="{{ coupling.image.url }}" class="card-img-top" alt="{{ coupling.model }}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal">
+              <div class="card-body">
+                <h5 class="card-title">Detalles del Acople Bomba {{ coupling.pump.tag }}</h5>
+                <p class="card-text">
+                  <hr>
+                  <strong>Tipo de acople:</strong> {{ coupling.types }}<br>
+                  <hr>
+                  <strong>Serie:</strong> {{ coupling.model }}<br>
+                  <hr>
+                  <strong>Medida eje lado motor:</strong> {{ coupling.motor_side_measure }}<br>
+                  <hr>
+                  <strong>Medida eje lado bomba:</strong> {{ coupling.pump_side_sizer }}<br>
+                  <hr>
+                  <strong>Medida chaveta lado motor:</strong> {{ coupling.motor_key_measure }}
+                  <hr>
+                  <strong>Medida chaveta lado bomba:</strong> {{ coupling.pump_key_measure }}
+                  <hr>
+                  <strong>Descripción:</strong> {{ coupling.description }}
+                  <hr>
+                </p>
+                <a href="{% url 'delete_coupling' coupling.coupling_id %}?coupling_list=true" id="coupling_list" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editarModal{{coupling.coupling_id}}" data-motor-list-param="{{ coupling_list_param }}">Editar</button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Modal para la imagen -->
+      {% for coupling in coupling_list %}
+      <div class="modal fade" id="imagenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <img src="{{ coupling.image.url }}" class="img-fluid" alt="coupling">
             </div>
           </div>
         </div>
-        {% endfor %}
       </div>
-    </div>
 
-    <!-- Modal para la imagen -->
-    {% for coupling in coupling_list %}
-    <div class="modal fade" id="imagenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <img src="{{ coupling.image.url }}" class="img-fluid" alt="coupling">
+      <!-- Modal para la edición -->
+      <div class="modal fade" id="editarModal{{coupling.coupling_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Editar Detalles del Acople Bomba {{ coupling.pump.tag }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="{% url 'update_coupling' coupling.coupling_id %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="coupling_list_param" value="true">
+                <div class="form-group mb-3">
+                  <label for="types">Tipo de acople:</label>
+                  <input type="text" class="form-control" id="types" name="types" value="{{coupling.types}}">
+                </div>
+                <div class="form-group mb-3">
+                  <label for="model">Serie:</label>
+                  <input type="text" class="form-control" id="model" name="model" value="{{coupling.model}}">
+                </div>
+                <div class="form-group mb-3">
+                  <label for="motor_side_measure">Medida eje lado motor:</label>
+                  <input type="text" class="form-control" id="motor_side_measure" name="motor_side_measure" value="{{coupling.motor_side_measure}}">
+                </div>
+                <div class="form-group mb-3">
+                  <label for="pump_side_sizer">Medida eje lado bomba:</label>
+                  <input type="text" class="form-control" id="pump_side_sizer" name="pump_side_sizer" value="{{coupling.pump_side_sizer}}">
+                </div>
+                <div class="form-group mb-3">
+                  <label for="motor_key_measure">Medida chaveta lado motor:</label>
+                  <input type="text" class="form-control" id="motor_key_measure" name="motor_key_measure" value="{{coupling.motor_key_measure}}">
+                </div>
+                <div class="form-group mb-3">
+                  <label for="pump_key_measure">Medida chaveta lado bomba:</label>
+                  <input type="text" class="form-control" id="pump_key_measure" name="pump_key_measure" value="{{coupling.pump_key_measure}}">
+                </div>
+                <div class="form-group">
+                  <label for="description">Descripción:</label>
+                  <textarea class="form-control" id="description" name="description" rows="3">{{coupling.description}}</textarea>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="image">Imagen:</label>
+                  <input type="file" class="form-control-file" id="image">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                  <button type="submit" class="btn btn-sm btn-outline-primary">
+                    Guardar Cambios
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Modal para la edición -->
-    <div class="modal fade" id="editarModal{{coupling.coupling_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Editar Detalles del Acople Bomba {{ coupling.pump.tag }}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="{% url 'update_coupling' coupling.coupling_id %}" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <input type="hidden" name="coupling_list_param" value="true">
-              <div class="form-group mb-3">
-                <label for="types">Tipo de acople:</label>
-                <input type="text" class="form-control" id="types" name="types" value="{{coupling.types}}">
-              </div>
-              <div class="form-group mb-3">
-                <label for="model">Serie:</label>
-                <input type="text" class="form-control" id="model" name="model" value="{{coupling.model}}">
-              </div>
-              <div class="form-group mb-3">
-                <label for="motor_side_measure">Medida eje lado motor:</label>
-                <input type="text" class="form-control" id="motor_side_measure" name="motor_side_measure" value="{{coupling.motor_side_measure}}">
-              </div>
-              <div class="form-group mb-3">
-                <label for="pump_side_sizer">Medida eje lado bomba:</label>
-                <input type="text" class="form-control" id="pump_side_sizer" name="pump_side_sizer" value="{{coupling.pump_side_sizer}}">
-              </div>
-              <div class="form-group mb-3">
-                <label for="motor_key_measure">Medida chaveta lado motor:</label>
-                <input type="text" class="form-control" id="motor_key_measure" name="motor_key_measure" value="{{coupling.motor_key_measure}}">
-              </div>
-              <div class="form-group mb-3">
-                <label for="pump_key_measure">Medida chaveta lado bomba:</label>
-                <input type="text" class="form-control" id="pump_key_measure" name="pump_key_measure" value="{{coupling.pump_key_measure}}">
-              </div>
-              <div class="form-group">
-                <label for="description">Descripción:</label>
-                <textarea class="form-control" id="description" name="description" rows="3">{{coupling.description}}</textarea>
-              </div>
-              <div class="form-group mt-3">
-                <label for="image">Imagen:</label>
-                <input type="file" class="form-control-file" id="image">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-sm btn-outline-primary">
-                  Guardar Cambios
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </section>
+      {% endfor %}
+    </section>
+</main>
 {% endblock %}

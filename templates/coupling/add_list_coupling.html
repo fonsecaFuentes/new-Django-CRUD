@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<main class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 mt-5">
+            <form action="" method="POST" class="card card-body shadow p-3">
+                <h2 class="text-center">Agregar Acople</h2>
+                <code><a href="{% url 'list_coupling' %}" style="color: inherit; cursor: pointer; text-decoration: none">volver...</a></code>
+                <hr>
+                {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="pump">Bomba:</label>
+                        <select class="form-control" id="pump" name="pump" required>
+                        <option value="" selected disabled>Seleccione una bomba</option>
+                        {% for pump in available_pumps %}
+                            <option value="{{ pump.pk }}">{{ pump.tag }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="types">Tipo de acople:</label>
+                        <input type="text" class="form-control" id="types" name="types">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="model">Serie:</label>
+                        <input type="text" class="form-control" id="model" name="model">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="motor_side_measure">Medida eje lado motor:</label>
+                        <input type="text" class="form-control" id="motor_side_measure" name="motor_side_measure">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="pump_side_sizer">Medida eje lado bomba:</label>
+                        <input type="text" class="form-control" id="pump_side_sizer" name="pump_side_sizer">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="motor_key_measure">Medida chaveta lado motor:</label>
+                        <input type="text" class="form-control" id="motor_key_measure" name="motor_key_measure">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="pump_key_measure">Medida chaveta lado bomba:</label>
+                        <input type="text" class="form-control" id="pump_key_measure" name="pump_key_measure">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Descripción:</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="image">Imagen:</label>
+                        <input type="file" class="form-control-file" id="image">
+                    </div>
+                <hr>
+                <button type="submit" class="btn btn-lg btn-outline-secondary">
+                    Agregar
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}
