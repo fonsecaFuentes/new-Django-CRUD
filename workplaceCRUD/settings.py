@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'pumpsData',
     'motorData',
     'couplingData',
+    'tasks'
 ]
 
 # Crispy-forms

@@ -228,21 +228,6 @@ def profile(request):
 
 
 @login_required
-def section(request):
-    return render(request, 'section.html')
-
-
-@login_required
-def data(request):
-    return render(request, 'data.html')
-
-
-@login_required
-def tasks(request):
-    return render(request, 'tasks.html')
-
-
-@login_required
 def observations(request):
     return render(request, 'observations.html')
 

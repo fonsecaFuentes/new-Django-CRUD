@@ -1,0 +1,161 @@
+
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% load static %}
+<script src="{% static 'js/clearfield.js' %}"></script>
+<main>
+  <section class="py-5 text-center container">
+    <nav class="navbar navbar-expand-lg rounded shadow p-3" style="background-color: #6C757D;">
+      <div class="container-fluid">
+        <a class="btn btn-light btn-lg" href="{% url 'add_tasks' %}">Agregar Tarea</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="ms-auto">
+            <form class="d-flex" role="search" method="get">
+              <input class="form-control me-2" type="search" name="search" placeholder="Buscar" aria-label="Buscar" value="{{ search_query }}">
+              <select class="form-select me-2" name="important_choice">
+                <option value="">Cualquier opción</option>
+                <option value="1">Importante</option>
+                <option value="0">No Importante</option>
+              </select>
+              <select class="form-select me-2" name="completed_choice">
+                <option value="">Cualquier opción</option>
+                <option value="1">Completado</option>
+                <option value="0">No Completado</option>
+              </select>
+              <button class="btn btn-light me-2 btn-lg" type="submit">Buscar</button>
+              <button class="btn btn-warning btn-lg" id="clear-button">Limpiar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </nav>
+    {% if messages %}
+    <div id="message-container" class="mt-4 alert alert-success" role="alert">
+        {% for message in messages %}
+            {% autoescape off %}{{ message }}{% endautoescape %}
+        {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+  <section>
+      <div class="container mt-4">
+        <div class="row">
+          {% for tasks in tasks_list %}
+          <div class="col-md-4 mb-3">
+            <div class="card shadow p-3 mb-5">
+              <h5 class="card-title">Tarea {{ tasks.title }}</h5>
+              <img src="{{ tasks.image1.url }}" class="card-img-top" alt="{{ tasks.model1 }}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal1">
+              <br>
+              <img src="{{ tasks.image2.url }}" class="card-img-top" alt="{{ tasks.model2 }}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imagenModal2">
+              <div class="card-body">
+                <p class="card-text">
+                  <hr>
+                  <strong>Descripción:</strong> {{ tasks.description }}<br>
+                  <hr>
+                  <div class="form-group">
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label mr-2" for="important">Es importante</label>
+                        <input type="checkbox" class="form-check-input" id="important" {% if tasks.important %}checked{% endif %} disabled>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="form-group">
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label mr-2" for="completed">Completado</label>
+                        <input type="checkbox" class="form-check-input" id="completed" {% if tasks.completed %}checked{% endif %} disabled>
+                    </div>
+                  </div>
+                </p>
+                <a href="{% url 'delete_task' tasks.id %}" id="tasks" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editarModal{{tasks.id}}">Editar</button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Modal para la imagen -->
+      {% for tasks in tasks_list %}
+      <div class="modal fade" id="imagenModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <img src="{{ tasks.image1.url }}" class="img-fluid" alt="task1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="imagenModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <img src="{{ tasks.image2.url }}" class="img-fluid" alt="task2">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal para la edición -->
+      <div class="modal fade" id="editarModal{{tasks.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Editar Tarea {{ tasks.title }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="{% url 'update_task' tasks.id %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                  <label for="title">Titulo:</label>
+                  <input type="text" class="form-control" id="title" name="title" value="{{tasks.title}}">
+                </div>
+                <div class="form-group mb-3">
+                  <label for="description">Descripción:</label>
+                  <input type="text" class="form-control" id="description" name="description" value="{{tasks.description}}">
+                </div>
+                <div class="form-group mb-3">
+                  <label for="important">Es importante</label>
+                  <select class="form-control" id="important" name="important">
+                      <option value="True" {% if tasks.important %}selected{% endif %}>Sí</option>
+                      <option value="False" {% if not tasks.important %}selected{% endif %}>No</option>
+                  </select>
+              </div>
+                <div class="form-group mb-3">
+                    <label for="completed">Completado</label>
+                    <select class="form-control" id="completed" name="completed">
+                        <option value="True" {% if tasks.completed %}selected{% endif %}>Sí</option>
+                        <option value="False" {% if not tasks.completed %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="image1">Imagen:</label>
+                  <input type="file" class="form-control-file" id="image1">
+                </div>
+                <div class="form-group mt-3">
+                    <label for="image2">Imagen:</label>
+                    <input type="file" class="form-control-file" id="image2">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                  <button type="submit" class="btn btn-sm btn-outline-primary">
+                    Guardar Cambios
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+</main>
+{% endblock %}
