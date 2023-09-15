@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
+from django.utils import timezone
 from .models import Tasks
 from .forms import TasksForm
 
@@ -95,8 +96,6 @@ def update_task(request, id):
                 request, '¡Los datos se han almacenado exitosamente!'
             )
             return redirect('tasks')
-        # else:
-        #     messages.error(request, '¡Hubo un error al almacenar los datos!')
         else:
             for field, errors in task_form.errors.items():
                 for error in errors:
@@ -109,3 +108,12 @@ def update_task(request, id):
     context = {'task_form': task_form, 'task': task}
 
     return render(request, 'tasks/tasks.html', context)
+
+
+@login_required
+def complete_task(request, id):
+    task = get_object_or_404(Tasks, pk=id)
+    if request.method == 'POST':
+        task.completed = timezone.now()
+        task.save()
+        return redirect('tasks')
